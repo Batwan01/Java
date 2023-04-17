@@ -1,6 +1,6 @@
 class Product {
-	int price;
-	int bonuspoint;
+	int price; //제품의 가격
+	int bonuspoint; //보너스 점수
 
 	Product(int price) {
 		this.price = price;
@@ -10,10 +10,10 @@ class Product {
 
 class Tv extends Product {
 	Tv() {
-		super(100);
+		super(100); //조상클래스의 생성장 Product(int price)를 호출, tv의 가격 100
 	}
 
-	public String toString() {
+	public String toString() { //object클래스의 toString()을 오버라이딩한다.
 		return "Tv";
 	}
 }
