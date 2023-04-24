@@ -1,13 +1,13 @@
 import java.io.*;
 
 class Polygon_2 {
-	int nPolygon=0;
+	int nPolygon=0; //npolygon++하려면 필수로 =0해야함
 	class Triangle {
 		int height, width;
 		Triangle(int height, int width){nPolygon++;}
 	}
 
-	class Rectangle {
+	class Rectangle { //생성자
 		int height, width;
 		Rectangle(int height, int width){nPolygon++;}
 	}
@@ -24,7 +24,7 @@ class STEP_nPolygon{
 
 		height = System.in.read() - '0';
 		width = System.in.read() - '0';
-		Polygon_2.Triangle Tiran1 = poly.new Triangle(height, width);
+		Polygon_2.Triangle Tiran1 = poly.new Triangle(height, width); //poly.new 헷갈리지않게
 		
 		height = System.in.read() - '0';
 		width = System.in.read() - '0';
