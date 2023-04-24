@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 class npolygon_2{
-	static int nPolygon=0;
+	int nPolygon=0;
 	class Triangle{
 		int width, height;
 		
