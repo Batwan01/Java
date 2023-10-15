@@ -64,7 +64,7 @@ public class TcpIpMultichatClient {
     public void run() {
       while(in!=null) {
         try {
-            System.out.printlm(in.readUTF());
+            System.out.println(in.readUTF());
         } catch(IOException e) {}
       }
     } //run

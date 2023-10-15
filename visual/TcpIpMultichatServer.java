@@ -3,11 +3,11 @@ import java.io.*; //입출력
 import java.util.*;
 
 public class TcpIpMultichatServer {
-  HashMap clients; //HashMap은 내부에 '키'와 '값'을 저장하는 자료 구조
+  HashMap<String, DataOutputStream> clients; //HashMap은 내부에 '키'와 '값'을 저장하는 자료 구조
 
   TcpIpMultichatServer() {
-    clients = new HashMap();
-    
+    clients = new HashMap<>();
+
     //메서드는 MAP을 스레드로부터 안전하게 만들기 위해 래핑
     //`Collections.synchronizedMap(clients)`를 호출한 후 반환된 맵을 새 변수에 할당하지 않았습니다. 이렇게 하면 동기화된 맵의 참조가 없어져 원래의 `clients` 맵은 여전히 동기화되지 않은 상태입니다.
     //결론적으로, `Collections.synchronizedMap()` 메서드는 주어진 맵을 동기화하여 여러 스레드에서 안전하게 사용할 수 있도록 도와주지만, 복잡한 연산을 수행할 때는 추가적인 동기화 조치가 필요할 수 있습니다.
@@ -74,9 +74,8 @@ public class TcpIpMultichatServer {
         while(in!=null) {
           sendToAll(in.readUTF());
         }
-      } catch(IOException e) {
-        //무시
-      } finally {
+      } catch(IOException e) {} 
+      finally {
         sendToAll("#" + name + "님이 나가셨습니다.");
         clients.remove(name);
         System.out.println("[" + socket.getInetAddress() + ":" + socket.getPort() + "]" + "에서 접속을 종료하셨습니다.");
