@@ -24,12 +24,12 @@ public class TcpIpMultichatServer {
 
       while(true) {
         socket = serverSocket.accept(); //클라이언트의 연결요청이 올 때까지 실행을 멈추고 계속 기다린다. 연결 요청이 오면 클라이언트 소켓과 통신할 새로운 소켓을 생성
-        System.out.println("["+ socket.getInetAdderss() + ":" + socket.getPort() + "]" + "에서 접속하셨습니다."); //socket.getInetAdderss() < 주소 얻기, socket.getPort() < 포트 얻기
+        System.out.println("["+ socket.getInetAddress() + ":" + socket.getPort() + "]" + "에서 접속하셨습니다."); //socket.getInetAdderss() < 주소 얻기, socket.getPort() < 포트 얻기
         ServerReceiver thread = new ServerReceiver(socket);
-        thread.strat();
+        thread.start();
       }
     } catch(Exception e) {
-      e.printstackTrace();
+      e.printStackTrace();
     }
   } //start()
   
@@ -38,9 +38,50 @@ public class TcpIpMultichatServer {
 
     while(it.hasNext()) {
       try {
-        DataOutputStream out = (DataOutputStream)clients.get(it.next());
-      }
-    }
+        DataOutputStream out = (DataOutputStream)clients.get(it.next()); //clients 맵에서 Iterator를 통해 가져온 키에 해당하는 값을 DataOutputStream 객체로 캐스팅하여 out 변수에 저장
+        out.writeUTF(msg);
+      } catch(IOException e) {}
+    } //while
+  } //sendToAll
+
+  public static void main(String args[]) {
+    new TcpIpMultichatServer().start();
   }
 
-}
+  class ServerReceiver extends Thread {
+    Socket socket;
+    DataInputStream in; // 데이터 타입들을 입력 스트림에서 읽어들일 때 사용됩니다. 
+    DataOutputStream out; // 데이터 타입들을 출력 스트림에서 출력할 때 사용됩니다. 
+
+    ServerReceiver(Socket socket) {
+      this.socket = socket;
+      try {
+        in = new DataInputStream(socket.getInputStream());
+        out = new DataOutputStream(socket.getOutputStream());
+      } catch (IOException e) {}
+    }
+
+    public void run() {
+      String name = "";
+
+      try {
+        name = in.readUTF();
+        sendToAll("#" + name + "님이 들어오셨습니다.");
+
+        clients.put(name, out); //name을 키로, out을 값으로 사용하여 clients 맵에 저장, DataOutputStream 객체(out)를 검색할 수 있다.
+        System.out.println("현재 서버접속자 수는 " + clients.size() + "입니다.");
+
+        while(in!=null) {
+          sendToAll(in.readUTF());
+        }
+      } catch(IOException e) {
+        //무시
+      } finally {
+        sendToAll("#" + name + "님이 나가셨습니다.");
+        clients.remove(name);
+        System.out.println("[" + socket.getInetAddress() + ":" + socket.getPort() + "]" + "에서 접속을 종료하셨습니다.");
+        System.out.println("현재 서버접속자 수는 " + clients.size() + "입니다.");
+      } //try
+    } //run
+  } //ReceiverThread
+} //class
